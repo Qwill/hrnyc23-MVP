@@ -30,10 +30,10 @@ class App extends React.Component {
                 arr.push(obj)
             }
             const compare = (a, b) => {
-                if (a.id > b.id) {
+                if (Number(a.id) > Number(b.id)) {
                     return -1
                 }
-                if (a.id < b.id) {
+                if (Number(a.id) < Number(b.id)) {
                     return 1
                 }
                 return 0
