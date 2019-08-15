@@ -31,10 +31,10 @@ class App extends React.Component {
             }
             const compare = (a, b) => {
                 if (a.id > b.id) {
-                    return 1
+                    return -1
                 }
                 if (a.id < b.id) {
-                    return -1
+                    return 1
                 }
                 return 0
             }
