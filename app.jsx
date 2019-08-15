@@ -18,7 +18,7 @@ class App extends React.Component {
     }
     handleSubmit(e) {
         e.preventDefault()
-        axios.get(`/scrape?url=${this.state.value}`)
+        axios.get(`/scrape?url=${this.state.input}`)
         .then(({data}) => {
             console.log(data)
             let arr = []

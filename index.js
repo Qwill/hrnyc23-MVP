@@ -14,35 +14,37 @@ app.get('/scrape', async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setJavaScriptEnabled(true)
-    await page.goto(`https://twitter.com/nixonnixoff`); 
+    await page.goto(`https://twitter.com/${req.query.url}`); 
     await page.setJavaScriptEnabled(true)
     let obj = {}
-    await autoScroll(page)
+    //await autoScroll(page)
+    for (let i = 0; i < 100; i++) {
+        let id, date, text
+        try {id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
+             date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
+             text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
+             obj[id] = {date: date, text: text}
+             console.log(i)
+             } catch (err) {continue}
+       }
     async function autoScroll(page){
         await page.evaluate(async () => {
             await new Promise((resolve, reject) => {
+                let count = 0
                 var totalHeight = 0;
                 var distance = 100;
                 var timer = setInterval(() => {
                     var scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
-    
-                    console.log(Object.keys(obj).length)
-                    for (let i = 0; i < 100; i++) {
-                        let id, date, text
-                        try {id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-                             date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-                             text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-                             obj[id] = {date: date, text: text}
-                             console.log(i)
-                             } catch (err) {continue}
-                       }
-
-                    if(totalHeight >= scrollHeight){
+                    count++
+                    
+                    if (count === 20) {
+                    //if(totalHeight >= scrollHeight){
                         clearInterval(timer);
                         resolve();
                     }
+                
                 }, 400);
             });
         });
