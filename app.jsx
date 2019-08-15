@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
+import parser from 'react-html-parser'
 
 class App extends React.Component {
     constructor () {
@@ -56,7 +57,7 @@ class App extends React.Component {
                         <React.Fragment key={idx}>
                         <p>{tweet.id}</p>
                         <p>{tweet.date}</p>
-                        <p>{tweet.text}</p>
+                        <p>{parser(tweet.text)}</p>
                         <hr/>
                         </React.Fragment>
                     )
