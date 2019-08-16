@@ -57,7 +57,7 @@ class App extends React.Component {
                     return (
                         <React.Fragment key={idx}>
                             <a href={tweet.id}>{tweet.id}</a>
-                            <p style={{ float: right }}>{tweet.date}</p>
+                            <p style={{ float: 'right' }}>{tweet.date}</p>
                             <p>{parser(tweet.text)}</p>
                             <hr />
                         </React.Fragment>
