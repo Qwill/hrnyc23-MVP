@@ -19,13 +19,12 @@ class App extends React.Component {
     }
     handleSubmit(e) {
         e.preventDefault()
+        let name = this.state.input
         this.setState({ output: [], scraping: true })
         axios.get(`/scrape?url=${this.state.input}`)
             .then(({ data }) => {
-                this.setState({ scraping: false })
-                console.log(data)
+                this.setState({ input: '', scraping: false })
                 let arr = []
-                let name = this.state.input
                 for (let key in data) {
                     let obj = {}
                     obj.id = key
