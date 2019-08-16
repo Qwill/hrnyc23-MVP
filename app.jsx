@@ -63,10 +63,12 @@ class App extends React.Component {
                 <hr />
                 {this.state.output.map((tweet, idx) => {
                     return (
-                        <React.Fragment key={idx} style={{ fontFamily: 'helvetica' }}>
-                            <a href={tweet.link}>{tweet.link}</a>
-                            <p style={{ float: 'right' }}><em>{tweet.date}</em></p>
-                            <p>{parser(tweet.text)}</p>
+                        <React.Fragment key={idx} >
+                            <div style={{ fontFamily: 'helvetica' }}>
+                                <a href={tweet.link}>{tweet.link}</a>
+                                <p style={{ float: 'right' }}><em>{tweet.date}</em></p>
+                                <p>{parser(tweet.text)}</p>
+                            </div>
                             <hr />
                         </React.Fragment>
                     )
