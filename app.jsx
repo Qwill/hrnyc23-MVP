@@ -58,7 +58,7 @@ class App extends React.Component {
                         <input type="text" placeholder="Enter Twitter handle here" value={this.state.input} onChange={this.changeInput}></input>
                         <input type="submit" value="Submit" />
                     </form>
-                    {this.state.scraping ? <span>Scraping...</span> : null}
+                    {this.state.scraping ? <span style={{ marginLeft: '30px' }}>Scraping...</span> : null}
                 </span>
                 <hr />
                 {this.state.output.map((tweet, idx) => {
