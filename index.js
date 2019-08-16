@@ -18,7 +18,7 @@ app.get('/scrape', async (req, res) => {
     await page.setJavaScriptEnabled(true)
     let obj = {}
     let count = 0
-    const interval = setInterval(() => {
+    const extractor = async (page, obj) => {
         for (let i = 0; i < 100; i++) {
             let id, date, text
             try {
@@ -34,6 +34,9 @@ app.get('/scrape', async (req, res) => {
         if (count === 20) {
             clearInterval(interval)
         }
+    }
+    const interval = setInterval(() => {
+        extractor(page, obj)
     }, 400)
     res.send(obj)
     await browser.close();
