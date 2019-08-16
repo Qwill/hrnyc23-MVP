@@ -25,7 +25,8 @@ class App extends React.Component {
                 let name = this.state.input
                 for (let key in data) {
                     let obj = {}
-                    obj.id = `https://twitter.com/${name}/status/${key}`
+                    obj.id = key
+                    obj.link = `https://twitter.com/${name}/status/${key}`
                     obj.date = data[key].date
                     obj.text = data[key].text
                     arr.push(obj)
@@ -53,10 +54,11 @@ class App extends React.Component {
                     <input type="text" placeholder="Enter Twitter handle here" value={this.state.input} onChange={this.changeInput}></input>
                     <input type="submit" value="Submit" />
                 </form>
+                <hr />
                 {this.state.output.map((tweet, idx) => {
                     return (
                         <React.Fragment key={idx}>
-                            <a href={tweet.id}>{tweet.id}</a>
+                            <a href={tweet.link}>{tweet.link}</a>
                             <p style={{ float: 'right' }}>{tweet.date}</p>
                             <p>{parser(tweet.text)}</p>
                             <hr />
