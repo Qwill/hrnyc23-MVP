@@ -17,105 +17,37 @@ app.get('/scrape', async (req, res) => {
     await page.goto(`https://twitter.com/${req.query.url}`);
     await page.setJavaScriptEnabled(true)
     let obj = {}
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
+    await autoScroll(page, obj)
+    async function autoScroll(page, obj) {
+        await page.evaluate(async (obj) => {
+            await new Promise((resolve, reject) => {
+                var totalHeight = 0;
+                var distance = 400;
+                var count = 0
+                var timer = setInterval(() => {
+                    var scrollHeight = document.body.scrollHeight;
+                    window.scrollBy(0, distance);
+                    totalHeight += distance;
+                    for (let i = 0; i < 100; i++) {
+                        let id, date, text
+                        try {
+                            id = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id')
+                            date = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
+                            text = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
+                            obj[id] = { date: date, text: text }
+                            console.log(i)
+                        } catch (err) { continue }
+                    }
+                    count++
+                    //if(totalHeight >= scrollHeight){
+                    if (count === 20) {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 400);
+            });
+        }, obj);
     }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
-    for (let i = 0; i < 100; i++) {
-        let id, date, text
-        try {
-            id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
-            date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
-            text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
-            obj[id] = { date: date, text: text }
-            console.log(i)
-        } catch (err) { continue }
-    }
-    await page.evaluate(async () => { window.scrollBy(0, 400); })
     res.send(obj)
     await browser.close();
 })
