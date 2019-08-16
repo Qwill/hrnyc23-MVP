@@ -16,11 +16,11 @@ app.get('/scrape', async (req, res) => {
     await page.setJavaScriptEnabled(true)
     await page.goto(`https://twitter.com/${req.query.url}`);
     await page.setJavaScriptEnabled(true)
-    let output = await autoScroll(page)
+    let obj = await autoScroll(page)
     async function autoScroll(page) {
-        let obj = await page.evaluate(async () => {
+        return page.evaluate(async () => {
+            let obj = {}
             await new Promise((resolve, reject) => {
-                let obj = {}
                 var totalHeight = 0;
                 var distance = 400;
                 var count = 0
@@ -41,14 +41,13 @@ app.get('/scrape', async (req, res) => {
                     //if(totalHeight >= scrollHeight){
                     if (count === 20) {
                         clearInterval(timer);
-                        resolve(pbj);
+                        resolve(obj);
                     }
                 }, 400);
             });
         });
-        return obj
     }
-    res.send(output)
+    res.send(obj)
     await browser.close();
 })
 
