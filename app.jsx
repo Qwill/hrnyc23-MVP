@@ -8,7 +8,8 @@ class App extends React.Component {
         super()
         this.state = {
             input: '',
-            output: []
+            output: [],
+            scraping: false
         }
         this.changeInput = this.changeInput.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -18,8 +19,10 @@ class App extends React.Component {
     }
     handleSubmit(e) {
         e.preventDefault()
+        this.setState({ output: [], scraping: true })
         axios.get(`/scrape?url=${this.state.input}`)
             .then(({ data }) => {
+                this.setState({ scraping: false })
                 console.log(data)
                 let arr = []
                 let name = this.state.input
@@ -50,10 +53,13 @@ class App extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" placeholder="Enter Twitter handle here" value={this.state.input} onChange={this.changeInput}></input>
-                    <input type="submit" value="Submit" />
-                </form>
+                <span>
+                    <form onSubmit={this.handleSubmit}>
+                        <input type="text" placeholder="Enter Twitter handle here" value={this.state.input} onChange={this.changeInput}></input>
+                        <input type="submit" value="Submit" />
+                    </form>
+                    {this.state.scraping ? <span>Scraping...</span> : null}
+                </span>
                 <hr />
                 {this.state.output.map((tweet, idx) => {
                     return (
