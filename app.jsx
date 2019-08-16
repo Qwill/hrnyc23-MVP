@@ -54,7 +54,7 @@ class App extends React.Component {
         return (
             <React.Fragment>
                 <span>
-                    <form onSubmit={this.handleSubmit}>
+                    <form style={{ display: 'inline' }} onSubmit={this.handleSubmit}>
                         <input type="text" placeholder="Enter Twitter handle here" value={this.state.input} onChange={this.changeInput}></input>
                         <input type="submit" value="Submit" />
                     </form>
