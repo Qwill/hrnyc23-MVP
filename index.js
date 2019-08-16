@@ -16,11 +16,11 @@ app.get('/scrape', async (req, res) => {
     await page.setJavaScriptEnabled(true)
     await page.goto(`https://twitter.com/${req.query.url}`);
     await page.setJavaScriptEnabled(true)
-    let obj = {}
-    await autoScroll(page, obj)
-    async function autoScroll(page, obj) {
-        await page.evaluate(async (obj) => {
+    let output = await autoScroll(page)
+    async function autoScroll(page) {
+        let obj = await page.evaluate(async () => {
             await new Promise((resolve, reject) => {
+                let obj = {}
                 var totalHeight = 0;
                 var distance = 400;
                 var count = 0
@@ -35,20 +35,20 @@ app.get('/scrape', async (req, res) => {
                             date = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                             text = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
                             obj[id] = { date: date, text: text }
-                            console.log(i)
                         } catch (err) { continue }
                     }
                     count++
                     //if(totalHeight >= scrollHeight){
                     if (count === 20) {
                         clearInterval(timer);
-                        resolve();
+                        resolve(pbj);
                     }
                 }, 400);
             });
-        }, obj);
+        });
+        return obj
     }
-    res.send(obj)
+    res.send(output)
     await browser.close();
 })
 
