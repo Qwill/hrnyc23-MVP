@@ -22,31 +22,29 @@ app.get('/scrape', async (req, res) => {
             return await new Promise((resolve, reject) => {
                 let obj = {}
                 var totalHeight = 0;
-                var distance = 400;
+                var distance = 100;
                 var count = 0
                 var timer = setInterval(() => {
                     var scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
-                    obj.a = document.body.childNodes[7].innerHTML
-                    // for (let i = 0; i < 100; i++) {
-                    //     let id, date, text, body
-                    //     try {
-                    //         id = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id')
-                    //         date = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
-                    //         text = document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
-                    //         obj[id] = { date: date, text: text }
-                    //     } catch (err) { continue }
-                    // }
+                    try {
+                    Array.apply(null, document.getElementsByClassName('js-stream-item')).forEach((tweet) => {
+                      let id = tweet.getAttribute('data-item-id')
+                      let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
+                      let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
+                      obj[id] = { date: date, text: text }
+                    })
+                    } catch (err) {obj.error = err.toString()}
                     count++
-                    //if(totalHeight >= scrollHeight){
+                    //if (totalHeight >= scrollHeight) {
                     if (count === 20) {
                         clearInterval(timer);
                         resolve(obj);
                     }
                 }, 400);
             });
-        }, page);
+        });
     }
     res.send(obj)
     await browser.close();
