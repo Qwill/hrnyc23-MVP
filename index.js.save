@@ -1,0 +1,52 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+const path = require('path')
+const puppeteer = require('puppeteer')
+const cors = require('cors')
+const app = express()
+const port = 4562
+
+app.use(express.static(path.join(__dirname, '/dist')))
+app.use(bodyParser.json())
+app.use(cors())
+
+app.get('/scrape', async (req, res) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setJavaScriptEnabled(true)
+    await page.goto(`https://twitter.com/nixonnixoff`); 
+    await page.setJavaScriptEnabled(true)
+    let obj = {}
+   for (let i = 0; i < 100; i++) {
+  let id, date, text
+   // if (await page.evaluate(i => {document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].innerHTML}, i) !== '') {
+   //  console.log('if 1 invoked')
+   // console.log(await page.evaluate(i => {document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].innerHTML}, i))
+   // if (await page.evaluate(i => {document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes.length}, i) > 1) {
+   //  console.log('if 2 invoked')
+   //  if (await page.evaluate(i => {document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id')}, i)) {
+    //toplvl = await page.evaluate(() => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].innerHTML);
+    //tweetsample = await page.evaluate(() => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].innerHTML)
+    try {id = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i);
+         date = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title'), i);
+         text = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML, i);
+         obj[id] = {date: date, text: text}
+         } catch (err) {continue}
+   //console.log('if invoked')
+   //try {date = await page.evaluate(i => {document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')}, i)} catch (err) {console.log(err)}
+   console.log(id)
+   console.log(date)
+   console.log(text)
+   //if (id !== undefined) {break}
+ //tweet = await page.evaluate(() => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML)
+   //}}}
+   }
+    //let i = 1
+    //const testDate = await page.evaluate(i => document.body.childNodes[7].childNodes[3].childNodes[1].childNodes[5].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[3].childNodes[1].childNodes[i].childNodes[1].getAttribute('data-tweet-id'), i)
+    res.send(obj)
+    await browser.close();
+})
+
+app.listen(port, () => {
+    console.log('Listening on port ' + port + '...')
+})
