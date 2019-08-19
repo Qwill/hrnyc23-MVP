@@ -10,10 +10,6 @@ app.use(express.static(path.join(__dirname, '/dist')))
 app.use(bodyParser.json())
 app.use(cors())
 
-app.get('/example', (req, res) => {
-    res.send('hello')
-})
-
 app.get('/scrape', async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
