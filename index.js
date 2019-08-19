@@ -4,7 +4,7 @@ const path = require('path')
 const puppeteer = require('puppeteer')
 const cors = require('cors')
 const app = express()
-const port = 4562
+const port = process.env.PORT || 4562
 
 app.use(express.static(path.join(__dirname, '/dist')))
 app.use(bodyParser.json())
@@ -27,12 +27,12 @@ app.get('/scrape', async (req, res) => {
                     window.scrollBy(0, distance);
                     totalHeight += distance;
                     Array.apply(null, document.getElementsByClassName('js-stream-item')).forEach((tweet) => {
-                      try {
-                        let id = tweet.getAttribute('data-item-id')
-                        let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
-                        let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
-                        obj[id] = { date: date, text: text }
-                      } catch (err) {return}
+                        try {
+                            let id = tweet.getAttribute('data-item-id')
+                            let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
+                            let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
+                            obj[id] = { date: date, text: text }
+                        } catch (err) { return }
                     })
                     count++
                     //if (totalHeight >= scrollHeight) {
