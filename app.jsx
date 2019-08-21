@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
 import parser from 'react-html-parser'
+import socketIOClient from "socket.io-client";
 
 class App extends React.Component {
     constructor() {
@@ -21,33 +22,32 @@ class App extends React.Component {
         e.preventDefault()
         let name = this.state.input
         this.setState({ output: [], scraping: true })
-        axios.get(`/scrape?url=${this.state.input}`)
-            .then(({ data }) => {
-                this.setState({ input: '', scraping: false })
-                let arr = []
-                for (let key in data) {
-                    let obj = {}
-                    obj.id = key
-                    obj.link = `https://twitter.com/${name}/status/${key}`
-                    obj.date = data[key].date
-                    obj.text = data[key].text
-                    arr.push(obj)
+        const socket = socketIOClient('http://localhost:4562')
+        socket.emit('submit', this.state.input)
+        socket.on('tweets', data => {
+            this.setState({ input: '', scraping: false })
+            let arr = []
+            for (let key in data) {
+                let obj = {}
+                obj.id = key
+                obj.link = `https://twitter.com/${name}/status/${key}`
+                obj.date = data[key].date
+                obj.text = data[key].text
+                arr.push(obj)
+            }
+            const compare = (a, b) => {
+                if (Number(a.id) > Number(b.id)) {
+                    return -1
                 }
-                const compare = (a, b) => {
-                    if (Number(a.id) > Number(b.id)) {
-                        return -1
-                    }
-                    if (Number(a.id) < Number(b.id)) {
-                        return 1
-                    }
-                    return 0
+                if (Number(a.id) < Number(b.id)) {
+                    return 1
                 }
-                arr.sort(compare)
-                this.setState({ output: arr })
-            })
-            .catch((err) => {
-                console.log('Error: ', err)
-            })
+                return 0
+            }
+            arr.sort(compare)
+            this.setState({ output: arr })
+            socket.emit('end')
+        })
     }
     render() {
         return (
