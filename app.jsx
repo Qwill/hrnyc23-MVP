@@ -22,7 +22,7 @@ class App extends React.Component {
         e.preventDefault()
         let name = this.state.input
         this.setState({ output: [], scraping: true })
-        const socket = socketIOClient('http://localhost:4562')
+        const socket = socketIOClient('13.59.177.156')
         socket.emit('submit', this.state.input)
         socket.on('tweets', data => {
             this.setState({ input: '', scraping: false })

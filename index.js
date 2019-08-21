@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 io.on('connection', (socket) => {
-    socket.on('submit', input => {
+    socket.on('submit', async input => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(`https://twitter.com/${input}`);
@@ -38,8 +38,8 @@ io.on('connection', (socket) => {
                             } catch (err) { return }
                         })
                         count++
-                        //if (totalHeight >= scrollHeight) {
-                        if (count === 100) {
+                        if (totalHeight >= scrollHeight) {
+                        //if (count === 100) {
                             clearInterval(timer);
                             resolve(obj);
                         }
