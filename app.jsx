@@ -25,7 +25,6 @@ class App extends React.Component {
         const socket = socketIOClient('167.99.159.42')
         socket.emit('submit', this.state.input)
         socket.on('tweets', data => {
-            console.log(data.error)
             this.setState({ input: '', scraping: false })
             let arr = []
             for (let key in data) {
