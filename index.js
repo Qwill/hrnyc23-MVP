@@ -30,6 +30,7 @@ io.on('connection', (socket) => {
                         window.scrollBy(0, distance);
                         totalHeight += distance;
                         Array.apply(null, document.getElementsByClassName('js-stream-item')).forEach((tweet) => {
+                            let found = false
                             try {
                                 let id = tweet.getAttribute('data-item-id')
                                 let name = tweet.childNodes[1].getAttribute('data-name')
@@ -37,8 +38,9 @@ io.on('connection', (socket) => {
                                 let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                                 let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
                                 obj[id] = { date: date, text: text, name: name, userId: userId }
+                                found = true
                             } catch (err) { return }
-                            try {
+                            if (!found) try {
                                 let id = tweet.getAttribute('data-item-id')
                                 let name = tweet.childNodes[1].getAttribute('data-name')
                                 let userId = tweet.childNodes[1].getAttribute('data-user-id')
