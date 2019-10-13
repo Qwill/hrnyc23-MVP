@@ -14,7 +14,7 @@ app.use(cors())
 
 io.on('connection', (socket) => {
     socket.on('submit', async input => {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
         await page.goto(`https://twitter.com/${input}`);
         let obj = await autoScroll(page)
