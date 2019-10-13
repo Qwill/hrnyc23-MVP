@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
                                     let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                                     let text = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].innerHTML
                                     obj[id] = { date: date, text: text, name: name, userId: userId }
-                                } catch (err) { obj.error = { text: err }; return }
+                                } catch (err) { obj['0'] = { date: '', text: err, name: '', userId: '' }; return }
                             }
                         })
                         count++
