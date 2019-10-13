@@ -35,6 +35,7 @@ class App extends React.Component {
                 obj.text = data[key].text
                 obj.name = data[key].name
                 obj.userId = data[key].userId
+                obj.test = data[key].test || ''
                 arr.push(obj)
             }
             const compare = (a, b) => {
@@ -69,6 +70,7 @@ class App extends React.Component {
                             <p style={{ float: 'right' }}><em>{tweet.date}</em></p>
                             <p style={{ fontSize: 'small' }}><strong>{tweet.name}</strong> tweet.userId</p>
                             <p style={{ fontFamily: 'helvetica' }}>{parser(tweet.text)}</p>
+                            <p>{tweet.test}</p>
                             <hr />
                         </React.Fragment>
                     )
