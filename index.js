@@ -32,14 +32,20 @@ io.on('connection', (socket) => {
                         Array.apply(null, document.getElementsByClassName('js-stream-item')).forEach((tweet) => {
                             try {
                                 let id = tweet.getAttribute('data-item-id')
+                                let name = tweet.getAttribute('data-name')
+                                let userId = tweet.getAttribute('data-user-id')
                                 let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                                 let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
-                                obj[id] = { date: date, text: text }
+                                obj[id] = { date: date, text: text, name: name, userId: userId }
+                            } catch (err) { return }
+                            try {
+                                let test = tweet.childNodes[1].childNodes[3].childNodes[5].innerHTML
+                                obj[id].test = test
                             } catch (err) { return }
                         })
                         count++
                         if (totalHeight >= scrollHeight) {
-                        //if (count === 100) {
+                            //if (count === 100) {
                             clearInterval(timer);
                             resolve(obj);
                         }
