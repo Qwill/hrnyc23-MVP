@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
                                 let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                                 let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
                                 obj[id] = { date: date, text: text, name: name, userId: userId }
-                            } catch (err) { return }
+                            } catch (err) { console.log('nobody will ever see this') }
                             if (!obj[tweet.getAttribute('data-item-id')]) {
                                 try {
                                     let id = tweet.getAttribute('data-item-id')
