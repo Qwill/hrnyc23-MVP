@@ -57,6 +57,16 @@ io.on('connection', (socket) => {
                                 obj[tweet.getAttribute('data-item-id')].quoteSN = quoteSN
                                 obj[tweet.getAttribute('data-item-id')].quoteText = quoteText
                             } catch (err) { console.log('nobody will ever see this') }
+                            if (!obj[tweet.getAttribute('data-item-id')].quoteName) {
+                                try {
+                                    let quoteName = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[1].innerText
+                                    let quoteSN = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[4].innerText.slice(1)
+                                    let quoteText = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[1].childNodes[5].innerHTML
+                                    obj[tweet.getAttribute('data-item-id')].quoteName = quoteName
+                                    obj[tweet.getAttribute('data-item-id')].quoteSN = quoteSN
+                                    obj[tweet.getAttribute('data-item-id')].quoteText = quoteText
+                                } catch (err) { console.log('nobody will ever see this') }
+                            }
                         })
                         count++
                         // if (totalHeight >= scrollHeight) {
