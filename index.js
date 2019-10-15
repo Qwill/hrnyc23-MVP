@@ -47,8 +47,16 @@ io.on('connection', (socket) => {
                                     let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                                     let text = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].innerHTML
                                     obj[id] = { date: date, text: text, name: name, userId: userId }
-                                } catch (err) { return }
+                                } catch (err) { console.log('nobody will ever see this') }
                             }
+                            try {
+                                let quoteName = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[1].innerHTML
+                                let quoteSN = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[4].innerText.slice(1)
+                                let quoteText = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[3].innerHTML
+                                obj[tweet.getAttribute('data-item-id')].quoteName = quoteName
+                                obj[tweet.getAttribute('data-item-id')].quoteSN = quoteSN
+                                obj[tweet.getAttribute('data-item-id')].quoteText = quoteText
+                            } catch (err) { console.log('nobody will ever see this') }
                         })
                         count++
                         // if (totalHeight >= scrollHeight) {
