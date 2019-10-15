@@ -67,6 +67,12 @@ io.on('connection', (socket) => {
                                     obj[tweet.getAttribute('data-item-id')].quoteText = quoteText
                                 } catch (err) { console.log('nobody will ever see this') }
                             }
+                            try {
+                                let linkName = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].childNodes[1].contentDocument.body.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[1].innerHTML
+                                let linkText = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].childNodes[1].contentDocument.body.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[3].innerHTML
+                                obj[tweet.getAttribute('data-item-id')].linkName = linkName
+                                obj[tweet.getAttribute('data-item-id')].linkText = linkText
+                            } catch (err) { console.log('nobody will ever see this') }
                         })
                         count++
                         // if (totalHeight >= scrollHeight) {
