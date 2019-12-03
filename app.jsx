@@ -33,6 +33,13 @@ class App extends React.Component {
                 obj.link = `https://twitter.com/${name}/status/${key}`
                 obj.date = data[key].date
                 obj.text = data[key].text
+                obj.name = data[key].name
+                obj.userId = data[key].userId
+                obj.quoteName = data[key].quoteName
+                obj.quoteSN = data[key].quoteSN
+                obj.quoteText = data[key].quoteText
+                obj.linkName = data[key].linkName
+                obj.linkText = data[key].linkText
                 arr.push(obj)
             }
             const compare = (a, b) => {
@@ -65,7 +72,13 @@ class App extends React.Component {
                         <React.Fragment key={idx} >
                             <a style={{ fontSize: 'small' }} href={tweet.link}>{tweet.link}</a>
                             <p style={{ float: 'right' }}><em>{tweet.date}</em></p>
+                            <p style={{ fontSize: 'small' }}><strong>{tweet.name}</strong> {tweet.userId}</p>
                             <p style={{ fontFamily: 'helvetica' }}>{parser(tweet.text)}</p>
+                            <br />
+                            <p style={{ fontSize: 'small' }}><strong>{tweet.quoteName}</strong> {tweet.quoteSN}</p>
+                            <p style={{ fontFamily: 'helvetica' }}>{parser(tweet.quoteText)}</p>
+                            <p style={{ fontSize: 'small' }}><strong>{tweet.linkName}</strong></p>
+                            <p style={{ fontFamily: 'helvetica' }}>{parser(tweet.linkText)}</p>
                             <hr />
                         </React.Fragment>
                     )

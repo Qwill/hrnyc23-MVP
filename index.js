@@ -14,7 +14,7 @@ app.use(cors())
 
 io.on('connection', (socket) => {
     socket.on('submit', async input => {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
         await page.goto(`https://twitter.com/${input}`);
         let obj = await autoScroll(page)
@@ -32,14 +32,51 @@ io.on('connection', (socket) => {
                         Array.apply(null, document.getElementsByClassName('js-stream-item')).forEach((tweet) => {
                             try {
                                 let id = tweet.getAttribute('data-item-id')
+                                let name = tweet.childNodes[1].getAttribute('data-name')
+                                let userId = tweet.childNodes[1].getAttribute('data-user-id')
                                 let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
                                 let text = tweet.childNodes[1].childNodes[3].childNodes[3].childNodes[1].innerHTML
-                                obj[id] = { date: date, text: text }
-                            } catch (err) { return }
+                                if (text === '&nbsp;') text = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].innerHTML
+                                obj[id] = { date: date, text: text, name: name, userId: userId }
+                            } catch (err) { console.log('nobody will ever see this') }
+                            if (!obj[tweet.getAttribute('data-item-id')]) {
+                                try {
+                                    let id = tweet.getAttribute('data-item-id')
+                                    let name = tweet.childNodes[1].getAttribute('data-name')
+                                    let userId = tweet.childNodes[1].getAttribute('data-user-id')
+                                    let date = tweet.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].getAttribute('title')
+                                    let text = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].innerHTML
+                                    obj[id] = { date: date, text: text, name: name, userId: userId }
+                                } catch (err) { console.log('nobody will ever see this') }
+                            }
+                            try {
+                                let quoteName = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[1].innerHTML
+                                let quoteSN = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[4].innerText.slice(1)
+                                let quoteText = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[3].innerHTML
+                                obj[tweet.getAttribute('data-item-id')].quoteName = quoteName
+                                obj[tweet.getAttribute('data-item-id')].quoteSN = quoteSN
+                                obj[tweet.getAttribute('data-item-id')].quoteText = quoteText
+                            } catch (err) { console.log('nobody will ever see this') }
+                            if (!obj[tweet.getAttribute('data-item-id')].quoteName) {
+                                try {
+                                    let quoteName = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[1].innerText
+                                    let quoteSN = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[4].innerText.slice(1)
+                                    let quoteText = tweet.childNodes[1].childNodes[3].childNodes[9].childNodes[1].childNodes[3].childNodes[1].childNodes[1].childNodes[5].innerHTML
+                                    obj[tweet.getAttribute('data-item-id')].quoteName = quoteName
+                                    obj[tweet.getAttribute('data-item-id')].quoteSN = quoteSN
+                                    obj[tweet.getAttribute('data-item-id')].quoteText = quoteText
+                                } catch (err) { console.log('nobody will ever see this') }
+                            }
+                            try {
+                                let linkName = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].childNodes[1].contentDocument.body.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[1].innerHTML
+                                let linkText = tweet.childNodes[1].childNodes[3].childNodes[5].childNodes[1].childNodes[1].contentDocument.body.childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].childNodes[3].innerHTML
+                                obj[tweet.getAttribute('data-item-id')].linkName = linkName
+                                obj[tweet.getAttribute('data-item-id')].linkText = linkText
+                            } catch (err) { console.log('nobody will ever see this') }
                         })
                         count++
-                        if (totalHeight >= scrollHeight) {
-                        //if (count === 100) {
+                        // if (totalHeight >= scrollHeight) {
+                        if (count === 100) {
                             clearInterval(timer);
                             resolve(obj);
                         }
